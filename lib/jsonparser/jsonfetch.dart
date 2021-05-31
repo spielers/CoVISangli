@@ -34,7 +34,7 @@ class jsonfetch extends StatefulWidget {
 var refreshkey = GlobalKey<RefreshIndicatorState>();
 
 class _jsonfetchState extends State<jsonfetch> {
-  final _debouncer = Debouncer(mili: 500);
+  final _debouncer = Debouncer(mili: 1000);
   List<Hospitals> _hospital;
   bool _loading;
   bool isSelected = false;
@@ -43,6 +43,9 @@ class _jsonfetchState extends State<jsonfetch> {
   bool isAvailable = false;
   bool isMjpajay = false;
   List<Hospitals> _filtered;
+  ScrollController _scrollViewController;
+  bool _showAppbar = true;
+  bool isScrollingDown = false;
 
   Future<void> refreshList() async {
     refreshkey.currentState?.show(atTop: false);
@@ -65,6 +68,26 @@ class _jsonfetchState extends State<jsonfetch> {
         _loading = false;
         _filtered = _hospital;
       });
+    });
+    _scrollViewController = new ScrollController();
+    _scrollViewController.addListener(() {
+      if (_scrollViewController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (!isScrollingDown) {
+          isScrollingDown = true;
+          _showAppbar = false;
+          setState(() {});
+        }
+      }
+
+      if (_scrollViewController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (isScrollingDown) {
+          isScrollingDown = false;
+          _showAppbar = true;
+          setState(() {});
+        }
+      }
     });
   }
 
@@ -275,212 +298,236 @@ class _jsonfetchState extends State<jsonfetch> {
       body: RefreshIndicator(
         key: refreshkey,
         onRefresh: refreshList,
-        child: Container(
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
           child: Column(
             children: <Widget>[
-              SizedBox(
-                height: 20,
-              ),
-              Wrap(
-                children: [
-                  Link(
-                    uri: Uri.parse(NavRoutes.homepage),
-                    builder: (context, followLink) {
-                      return ActionChip(
-                        label: Text('Beds'),
-                        onPressed: () {},
-                        backgroundColor: Colors.blue.shade100,
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Link(
-                    uri: Uri.parse(NavRoutes.tiffin),
-                    target: LinkTarget.self,
-                    builder: (context, followLink) {
-                      return ActionChip(
-                        label: Text('ShivBhojan Thali'),
-                        onPressed: () {
-                          //   Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed(NavRoutes.tiffin);
-                        },
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Link(
-                    uri: Uri.parse(NavRoutes.tiffin),
-                    target: LinkTarget.self,
-                    builder: (context, followLink) {
-                      return ActionChip(
-                        label: Text('HelpLine'),
-                        onPressed: () {
-                          //   Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed(NavRoutes.helpline);
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
               Container(
-                padding: EdgeInsets.all(10),
-                child: CupertinoSearchTextField(
-                  placeholder: 'Search Hospital or tahasil',
-                  borderRadius: BorderRadius.circular(20),
-                  onChanged: (string) {
-                    _debouncer.run(() {
-                      setState(() {
-                        _filtered = _hospital
-                            .where((h) =>
-                                h.hospital
-                                    .toLowerCase()
-                                    .contains(string.toLowerCase()) ||
-                                h.tahsil
-                                    .toLowerCase()
-                                    .contains(string.toLowerCase()) ||
-                                h.administrativeOfficer
-                                    .toLowerCase()
-                                    .contains(string.toLowerCase()))
-                            .toList();
-                      });
-                    });
-                  },
-                ),
-              ),
-              Text(
-                'Search by Hospital name, address or Tahasil eg: "Palus" ',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.black54,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Wrap(
-                children: [
-                  FilterChip(
-                    label: Text('All'),
-                    labelStyle: TextStyle(
-                        color: isnormal ? Colors.white : Colors.black),
-                    selected: isnormal,
-                    onSelected: (bool selected) {
-                      _debouncer.run(() {
-                        setState(() {
-                          _filtered = _hospital;
-                          isnormal = !isnormal;
-                        });
-                      });
-                    },
-                    selectedColor: Theme.of(context).backgroundColor,
-                    checkmarkColor: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  FilterChip(
-                    label: Text('Available Only'),
-                    labelStyle: TextStyle(
-                        color: isAvailable ? Colors.white : Colors.black),
-                    selected: isAvailable,
-                    onSelected: (bool selected) {
-                      _debouncer.run(() {
-                        setState(() {
-                          _filtered = _hospital
-                              .where(
-                                  (h) => h.wardBeds.contains(RegExp(r'[1-99]')))
-                              .toList();
-                          isAvailable = selected;
-                        });
-                      });
-                    },
-                    selectedColor: Theme.of(context).backgroundColor,
-                    checkmarkColor: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  FilterChip(
-                    label: Text('ICU Beds'),
-                    labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black),
-                    selected: isSelected,
-                    onSelected: (bool selected) {
-                      _debouncer.run(() {
-                        setState(() {
-                          _filtered = _hospital
-                              .where(
-                                  (h) => h.wardBeds.contains(RegExp(r'[1-99]')))
-                              .toList();
-                          isSelected = selected;
-                        });
-                      });
-                    },
-                    selectedColor: Theme.of(context).backgroundColor,
-                    checkmarkColor: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  FilterChip(
-                    label: Text('Ward Beds'),
-                    labelStyle: TextStyle(
-                        color: isSelected1 ? Colors.white : Colors.black),
-                    selected: isSelected1,
-                    onSelected: (bool selected) {
-                      _debouncer.run(() {
-                        setState(() {
-                          _filtered = _hospital
-                              .where((h) =>
-                                  h.vacantBeds.compareTo(h.totalOccupancy) >= 1)
-                              .toList();
-                          isSelected1 = selected;
-                        });
-                      });
-                    },
-                    selectedColor: Theme.of(context).backgroundColor,
-                    checkmarkColor: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  // FilterChip(
-                  //   label: Text('MJPJAY'),
-                  //   labelStyle:
-                  //       TextStyle(color: isMjpajay ? Colors.white : Colors.black),
-                  //   selected: isMjpajay,
-                  //   onSelected: (bool selected) {
-                  //     _debouncer.run(() {
-                  //       setState(() {
-                  //         _filtered = _hospital
-                  //             .where((h) => h.hospital.contains('MJPJAY'))
-                  //             .toList();
-                  //         isMjpajay = selected;
-                  //       });
-                  //     });
-                  //   },
-                  //   selectedColor: Theme.of(context).backgroundColor,
-                  //   checkmarkColor: Colors.black,
-                  // ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Chip(
-                label: Text(
-                    "Data may be delayed or partial. Please verify with the hospital."),
-                labelStyle: TextStyle(color: Colors.orange.shade700),
-                backgroundColor: Colors.orange.shade50,
+                child: _showAppbar
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Wrap(
+                            children: [
+                              Link(
+                                uri: Uri.parse(NavRoutes.homepage),
+                                builder: (context, followLink) {
+                                  return ActionChip(
+                                    label: Text('Beds'),
+                                    onPressed: () {},
+                                    backgroundColor: Colors.blue.shade100,
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Link(
+                                uri: Uri.parse(NavRoutes.tiffin),
+                                target: LinkTarget.self,
+                                builder: (context, followLink) {
+                                  return ActionChip(
+                                    label: Text('ShivBhojan Thali'),
+                                    onPressed: () {
+                                      //   Navigator.of(context).pop();
+                                      Navigator.of(context)
+                                          .pushNamed(NavRoutes.tiffin);
+                                    },
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Link(
+                                uri: Uri.parse(NavRoutes.tiffin),
+                                target: LinkTarget.self,
+                                builder: (context, followLink) {
+                                  return ActionChip(
+                                    label: Text('HelpLine'),
+                                    onPressed: () {
+                                      //   Navigator.of(context).pop();
+                                      Navigator.of(context)
+                                          .pushNamed(NavRoutes.helpline);
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            child: CupertinoSearchTextField(
+                              placeholder: 'Search Hospital or tahasil',
+                              borderRadius: BorderRadius.circular(20),
+                              onChanged: (string) {
+                                _debouncer.run(() {
+                                  setState(() {
+                                    _filtered = _hospital
+                                        .where((h) =>
+                                            h.hospital.toLowerCase().contains(
+                                                string.toLowerCase()) ||
+                                            h.tahsil.toLowerCase().contains(
+                                                string.toLowerCase()) ||
+                                            h.administrativeOfficer
+                                                .toLowerCase()
+                                                .contains(string.toLowerCase()))
+                                        .toList();
+                                  });
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            'Search by Hospital name, address or Tahasil eg: "Palus" ',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Wrap(
+                            children: [
+                              FilterChip(
+                                label: Text('All'),
+                                labelStyle: TextStyle(
+                                    color:
+                                        isnormal ? Colors.white : Colors.black),
+                                selected: isnormal,
+                                onSelected: (bool selected) {
+                                  _debouncer.run(() {
+                                    setState(() {
+                                      _filtered = _hospital;
+                                      isnormal = !isnormal;
+                                    });
+                                  });
+                                },
+                                selectedColor:
+                                    Theme.of(context).backgroundColor,
+                                checkmarkColor: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              FilterChip(
+                                label: Text('Available Only'),
+                                labelStyle: TextStyle(
+                                    color: isAvailable
+                                        ? Colors.white
+                                        : Colors.black),
+                                selected: isAvailable,
+                                onSelected: (bool selected) {
+                                  _debouncer.run(() {
+                                    setState(() {
+                                      _filtered = _hospital
+                                          .where((h) => h.wardBeds
+                                              .contains(RegExp(r'[1-99]')))
+                                          .toList();
+                                      isAvailable = selected;
+                                    });
+                                  });
+                                },
+                                selectedColor:
+                                    Theme.of(context).backgroundColor,
+                                checkmarkColor: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              FilterChip(
+                                label: Text('ICU Beds'),
+                                labelStyle: TextStyle(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black),
+                                selected: isSelected,
+                                onSelected: (bool selected) {
+                                  _debouncer.run(() {
+                                    setState(() {
+                                      _filtered = _hospital
+                                          .where((h) => h.wardBeds
+                                              .contains(RegExp(r'[1-99]')))
+                                          .toList();
+                                      isSelected = selected;
+                                    });
+                                  });
+                                },
+                                selectedColor:
+                                    Theme.of(context).backgroundColor,
+                                checkmarkColor: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              FilterChip(
+                                label: Text('Ward Beds'),
+                                labelStyle: TextStyle(
+                                    color: isSelected1
+                                        ? Colors.white
+                                        : Colors.black),
+                                selected: isSelected1,
+                                onSelected: (bool selected) {
+                                  _debouncer.run(() {
+                                    setState(() {
+                                      _filtered = _hospital
+                                          .where((h) =>
+                                              h.vacantBeds.compareTo(
+                                                  h.totalOccupancy) >=
+                                              1)
+                                          .toList();
+                                      isSelected1 = selected;
+                                    });
+                                  });
+                                },
+                                selectedColor:
+                                    Theme.of(context).backgroundColor,
+                                checkmarkColor: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              // FilterChip(
+                              //   label: Text('MJPJAY'),
+                              //   labelStyle:
+                              //       TextStyle(color: isMjpajay ? Colors.white : Colors.black),
+                              //   selected: isMjpajay,
+                              //   onSelected: (bool selected) {
+                              //     _debouncer.run(() {
+                              //       setState(() {
+                              //         _filtered = _hospital
+                              //             .where((h) => h.hospital.contains('MJPJAY'))
+                              //             .toList();
+                              //         isMjpajay = selected;
+                              //       });
+                              //     });
+                              //   },
+                              //   selectedColor: Theme.of(context).backgroundColor,
+                              //   checkmarkColor: Colors.black,
+                              // ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Chip(
+                            label: Text(
+                                "Data may be delayed or partial. Please verify with the hospital."),
+                            labelStyle:
+                                TextStyle(color: Colors.orange.shade700),
+                            backgroundColor: Colors.orange.shade50,
+                          ),
+                        ],
+                      )
+                    : Container(),
               ),
               Expanded(
                 child: Container(
                   constraints: BoxConstraints(maxWidth: 1200),
                   padding: EdgeInsets.all(10),
                   child: ListView.builder(
+                    controller: _scrollViewController,
                     itemCount: null == _filtered ? 0 : _filtered.length,
                     itemBuilder: (BuildContext context, int index) {
                       Hospitals hm = _filtered[index];
@@ -715,5 +762,13 @@ class _jsonfetchState extends State<jsonfetch> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scrollViewController.dispose();
+    _scrollViewController.removeListener(() {});
+    super.dispose();
   }
 }
