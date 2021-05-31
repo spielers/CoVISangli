@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:my_app/jsonparser/hospitals.dart';
+import 'package:covisangli/jsonparser/hospitals.dart';
 
 class Services {
   static var url = Uri.parse('https://sangli.me/api/v1');

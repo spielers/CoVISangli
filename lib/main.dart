@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Views/Homepage.dart';
-import 'package:my_app/Views/Terms.dart';
-import 'package:my_app/Views/aboutus.dart';
-import 'package:my_app/Views/helpline.dart';
-import 'package:my_app/jsonparser/jsonfetch.dart';
-import 'package:my_app/shivparser/shivdisplay.dart';
+import 'package:covisangli/Views/Homepage.dart';
+import 'package:covisangli/Views/Terms.dart';
+import 'package:covisangli/Views/aboutus.dart';
+import 'package:covisangli/Views/helpline.dart';
+import 'package:covisangli/jsonparser/jsonfetch.dart';
+import 'package:covisangli/shivparser/shivdisplay.dart';
 
 void main() {
   runApp(new HomeApp());

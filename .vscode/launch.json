@@ -6,7 +6,7 @@
     "configurations": [
     
         {
-            "name": "my_app",
+            "name": "covisangli",
             "request": "launch",
             "type": "dart"
         },
