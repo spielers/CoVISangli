@@ -155,7 +155,7 @@ class _jsonfetchState extends State<jsonfetch> {
                   fontSize: 24,
                 ),
               ),
-              accountEmail: Text('Helping Sangli To fight Covid-19'),
+              accountEmail: Text('Sangli Fights Corona'),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.green.shade200,
                 child: Image.asset('assets/logo.png'),
@@ -208,7 +208,7 @@ class _jsonfetchState extends State<jsonfetch> {
             SizedBox(height: 40),
             ListTile(
               title: Text('Suraj Patil'),
-              subtitle: Text('Devloper'),
+              subtitle: Text('Developer'),
               leading: Icon(FontAwesomeIcons.code),
             ),
             Row(
@@ -307,7 +307,7 @@ class _jsonfetchState extends State<jsonfetch> {
                     ? Column(
                         children: [
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           Wrap(
                             children: [
@@ -339,7 +339,7 @@ class _jsonfetchState extends State<jsonfetch> {
                                 },
                               ),
                               SizedBox(
-                                width: 10,
+                                width: 5,
                               ),
                               Link(
                                 uri: Uri.parse(NavRoutes.tiffin),
@@ -360,7 +360,7 @@ class _jsonfetchState extends State<jsonfetch> {
                           Container(
                             padding: EdgeInsets.all(10),
                             child: CupertinoSearchTextField(
-                              placeholder: 'Search Hospital or tahasil',
+                              placeholder: 'Search Hospital or Tehsil',
                               borderRadius: BorderRadius.circular(20),
                               onChanged: (string) {
                                 _debouncer.run(() {
@@ -381,14 +381,14 @@ class _jsonfetchState extends State<jsonfetch> {
                             ),
                           ),
                           Text(
-                            'Search by Hospital name, address or Tahasil eg: "Palus" ',
+                            'Search by Hospital name, address or Tehsil eg: "Palus" ',
                             style: TextStyle(
                               fontSize: 10,
                               color: Colors.black54,
                             ),
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           Wrap(
                             children: [
@@ -411,7 +411,7 @@ class _jsonfetchState extends State<jsonfetch> {
                                 checkmarkColor: Colors.black,
                               ),
                               SizedBox(
-                                width: 10,
+                                width: 5,
                               ),
                               FilterChip(
                                 label: Text('Available Only'),
@@ -436,7 +436,7 @@ class _jsonfetchState extends State<jsonfetch> {
                                 checkmarkColor: Colors.black,
                               ),
                               SizedBox(
-                                width: 10,
+                                width: 5,
                               ),
                               FilterChip(
                                 label: Text('ICU Beds'),
@@ -461,7 +461,7 @@ class _jsonfetchState extends State<jsonfetch> {
                                 checkmarkColor: Colors.black,
                               ),
                               SizedBox(
-                                width: 10,
+                                width: 5,
                               ),
                               FilterChip(
                                 label: Text('Ward Beds'),
@@ -487,9 +487,7 @@ class _jsonfetchState extends State<jsonfetch> {
                                     Theme.of(context).backgroundColor,
                                 checkmarkColor: Colors.black,
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
+
                               // FilterChip(
                               //   label: Text('MJPJAY'),
                               //   labelStyle:
@@ -510,13 +508,23 @@ class _jsonfetchState extends State<jsonfetch> {
                               // ),
                             ],
                           ),
-                          SizedBox(height: 10),
-                          Chip(
-                            label: Text(
-                                "Data may be delayed or partial. Please verify with the hospital."),
-                            labelStyle:
-                                TextStyle(color: Colors.orange.shade700),
-                            backgroundColor: Colors.orange.shade50,
+                          SizedBox(height: 5),
+                          SafeArea(
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.red.shade100,
+                              ),
+                              child: Text(
+                                "Data may be delayed or partial. Please verify with the hospital.",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown.shade900),
+                              ),
+                            ),
                           ),
                         ],
                       )
@@ -695,7 +703,14 @@ class _jsonfetchState extends State<jsonfetch> {
                                                       ? Colors.green.shade100
                                                       : Colors.red.shade100,
                                             ),
-                                            Text(" / " + hm.icuBeds,
+                                            Text(" / " + hm.totalRegisteredBeds,
+                                                // (int.parse(hm.wardBeds) >
+                                                //             int.parse(
+                                                //                 hm.icuBeds)
+                                                //         ? int.parse(
+                                                //             hm.wardBeds)
+                                                //         : hm.icuBeds)
+                                                //     .toString(),
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,

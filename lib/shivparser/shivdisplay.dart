@@ -46,7 +46,7 @@ class _ShivfetchState extends State<Shivfetch> {
       ),
       body: Column(
         children: <Widget>[
-          SizedBox(height: 10),
+          SizedBox(height: 5),
           Wrap(
             children: [
               Link(
@@ -80,7 +80,7 @@ class _ShivfetchState extends State<Shivfetch> {
           Container(
             padding: EdgeInsets.all(10),
             child: CupertinoSearchTextField(
-              placeholder: 'District or villiage Name',
+              placeholder: 'District or village name',
               borderRadius: BorderRadius.circular(20),
               onChanged: (string) {
                 setState(() {
@@ -126,12 +126,25 @@ class _ShivfetchState extends State<Shivfetch> {
 
           //   ],
           // ),
-          SizedBox(height: 10),
-          Chip(
-            label: Text(
-                "Navigation may be incorrect due to google maps hotels listing."),
-            labelStyle: TextStyle(color: Colors.orange.shade700),
-            backgroundColor: Colors.orange.shade50,
+          //  "Navigation may be incorrect due to google maps hotels listing."),
+
+          SizedBox(height: 5),
+          SafeArea(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.red.shade100,
+              ),
+              child: Text(
+                "Navigation may be incorrect due to google maps hotels listing.",
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown.shade900),
+              ),
+            ),
           ),
           SizedBox(height: 5),
           Expanded(
@@ -172,7 +185,7 @@ class _ShivfetchState extends State<Shivfetch> {
                               SizedBox(
                                 height: 5,
                               ),
-                              Text("Distict: " + th.districtName),
+                              Text("District: " + th.districtName),
                               SizedBox(
                                 height: 5,
                               ),
